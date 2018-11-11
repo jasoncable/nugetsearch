@@ -1,0 +1,126 @@
+﻿@model NuGetSearch.Models.NuGetSearchMainSearchResult
+
+<div class="card">
+    <div class="card-body">
+
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "form-inline" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.Page)
+            @Html.HiddenFor(x => x.Count)
+
+            <div class="form-group col-11">
+                @Html.TextBoxFor(x => x.SearchInput, new { @class = "form-control", style = "width: 100%;" })
+            </div>
+            <div class="form-group col-1">
+                <input type="submit" class="btn btn-primary" value="Search" />
+            </div>
+        }
+
+        @if (Model.Count > 0)
+        {
+            <div class="col-12">
+                @foreach (var item in Model.Data)
+                {
+                    <div class="row" style="margin-bottom: 20px;">
+                        <div class="col-1"></div>
+                        <div class="col-1">
+                            @if (item.IconUrl != null)
+                            {
+                                <img style="width:50px; height: 50px;" src="@item.IconUrl" onerror="this.src='/images/nugetsearch-01.svg'; this.onerror = null;" />
+                            }
+                            else
+                            {
+                                 <img src="/images/nugetsearch-01.svg" type="image/svg" style="width:50px;height:50px" />
+                            }
+                        </div>
+                        <div class="col-9">
+                            <div class="col-12">
+                                <div><a href="https://www.nuget.org/packages/@item.Name/" target="_blank"><h5>@item.Name</h5></a></div>
+
+                                @if (!String.IsNullOrWhiteSpace(item.Title))
+                                {
+                                    <div class="row">
+                                        <div class="col-3" style="font-weight: bold;">Title:</div>
+                                        <div class="col-9">@item.Title</div>
+                                    </div>
+                                }
+
+                                @if (!String.IsNullOrWhiteSpace(item.Summary))
+                                {
+                                    <div class="row">
+                                        <div class="col-3" style="font-weight: bold;">Summary:</div>
+                                        <div class="col-9">@item.Summary</div>
+                                    </div>
+                                }
+
+                                @if (!String.IsNullOrWhiteSpace(item.Description))
+                                {
+                                    <div class="row">
+                                        <div class="col-3" style="font-weight: bold;">Description:</div>
+                                        <div class="col-9">@item.Description</div>
+                                    </div>
+                                }
+
+                                @if (item.CommitTimeStamp != DateTime.MinValue)
+                                {
+                                    <div class="row" style="font-weight: bold;">
+                                        <div class="col-3">Last Update:</div>
+                                        <div class="col-9">@item.CommitTimeStamp.ToString("s")</div>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>
+                }
+
+            </div>
+
+            int pages = Model.Count % 20 > 0 ? ((int)Model.Count / 20) + 1 : (int)Model.Count / 20;
+
+            <div>
+                <ul class="pagination">
+
+                    @if (Model.Page != 0)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="#" data-page-id="@(Model.Page - 1)">Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = 0; i < pages; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : String.Empty)">
+                           <a class="page-link" href="#" data-page-id="@i">@(i + 1)</a>
+                        </li>
+                    }
+
+                    @if (Model.Page != pages - 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="#" data-page-id="@(Model.Page + 1)">Next</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            
+            <div>
+                Query Time (sec.): @Model.QueryTime.TotalSeconds
+            </div>
+
+        }
+        else
+        {
+            <div>No results found.</div>
+        }
+
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        nuGetSearchIndex.setup();
+    </script>
+}

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Jason L. Cable</Authors>
+    <Copyright>Copyright (c) 2018 Jason L. Cable</Copyright>
+    <PackageLicenseUrl>https://github.com/jasoncable/nugetsearch/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/jasoncable/nugetsearch</PackageProjectUrl>
+    <PackageIconUrl>https://nugetsearch.com/images/nugetsearch-01.svg</PackageIconUrl>
+    <RepositoryUrl>https://github.com/jasoncable/nugetsearch</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>nuget, dotnet-core, dotnet, elasticsearch</PackageTags>
+    <Version>0.0.2</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+</Project>

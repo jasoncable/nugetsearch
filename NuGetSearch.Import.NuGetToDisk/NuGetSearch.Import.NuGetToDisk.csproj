@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <LangVersion>7.1</LangVersion>
+    <Version>0.0.2</Version>
+    <Authors>Jason L. Cable</Authors>
+    <Company>Jason L. Cable</Company>
+    <Copyright>Copyright (c) 2018 Jason L. Cable</Copyright>
+    <PackageLicenseUrl>https://github.com/jasoncable/nugetsearch/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/jasoncable/nugetsearch</PackageProjectUrl>
+    <PackageIconUrl>https://nugetsearch.com/images/nugetsearch-01.svg</PackageIconUrl>
+    <RepositoryUrl>https://github.com/jasoncable/nugetsearch</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>nuget, dotnet-core, dotnet, elasticsearch</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="RestSharp" Version="106.5.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NuGetSearch.Import.DiskToElasticSearch\NuGetSearch.Import.DiskToElasticSearch.csproj" />
+    <ProjectReference Include="..\NuGetSearch.Models\NuGetSearch.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
