@@ -89,39 +89,47 @@ namespace NuGetSearch.Repositories
                    ||
                    q.Match(m =>
                        m.Field(f => f.NameSplit)
-                           .Analyzer("stop")
                            .Boost(1.41)
                            .Query(searchString)
                    )
                    ||
                    q.Match(m =>
                        m.Field(f => f.NameSplitCamel)
-                           .Analyzer("stop")
                            .Boost(1.4)
                            .Query(searchString)
                    )
                    ||
                    q.Match(m =>
-                       m.Field(f => f.Title)
+                       m.Field(f => f.Title.Suffix("stop"))
                            .Query(searchString)
                            .Analyzer("stop")
                            .Boost(1.3))
                    ||
                    q.Match(m =>
                        m.Field(f => f.Tags)
-                           .Analyzer("stop")
                            .Query(searchString)
                            .Boost(1.25))
                    ||
-                   q.MultiMatch(m =>
-                       m.Fields(f => f.Fields("title", "summary", "description"))
+                   q.Match(m =>
+                       m.Field(f => f.Title)
+                           .Query(searchString)
                            .Analyzer("stop")
-                           .Boost(1.2)
-                           .Query(searchString))
+                           .Boost(1.26))
+                   ||
+                   q.Match(m =>
+                       m.Field(f => f.Description)
+                           .Query(searchString)
+                           .Analyzer("stop")
+                           .Boost(1.25))
+                   ||
+                   q.Match(m =>
+                       m.Field(f => f.Summary)
+                           .Query(searchString)
+                           .Analyzer("stop")
+                           .Boost(1.24))
                    ||
                    q.Match(m =>
                        m.Field(f => f.Authors)
-                           .Analyzer("stop")
                            .Query(searchString)
                            .Boost(1.1));
         }
@@ -135,12 +143,126 @@ namespace NuGetSearch.Repositories
                 )
                 .Mappings(ms =>
                     ms.Map<NuGetSearchMain>(m =>
-                        m.AutoMap()
+                        m.Properties(p => p
+                            .Text(t => t
+                                .Name(n => n.Name)
+                                .Fields(ff => ff
+                                    .Keyword(k => k
+                                        .Name("keyword")
+                                        .IgnoreAbove(256)
+                                    )
+                                )
+                            )
+                            .Text(t => t
+                                .Name(n => n.NameSplit)
+                            )
+                            .Text(t => t
+                                .Name(n => n.NameSplitCamel)
+                            )
+                            .Text(t => t
+                                .Name(n => n.Authors)
+                                .Fields(ff => ff
+                                    .Keyword(k => k
+                                        .Name("keyword")
+                                        .IgnoreAbove(256)
+                                    )
+                                )
+                            )
+                            .Text(t => t
+                                .Name(n => n.Description)
+                                .Fields(ff => ff
+                                    .Text(tt => tt
+                                        .Name("stop")
+                                        .Analyzer("stop")
+                                    )
+                                )
+                            )
+
+                            .Text(t => t
+                                .Name(n => n.IconUrl)
+                            )
+                            .Text(t => t
+                                .Name(n => n.ProjectUrl)
+                            )
+                            .Text(t => t
+                                .Name(n => n.ReleaseNotes)
+                                .Fields(ff => ff
+                                    .Text(tt => tt
+                                        .Name("stop")
+                                        .Analyzer("stop")
+                                    )
+                                )
+                            )
+                            .Text(t => t
+                                .Name(n => n.Tags)
+
+                            )
+                            .Text(t => t
+                                .Name(n => n.Title)
+                                .Fields(ff => ff
+                                    .Text(tt => tt
+                                        .Name("stop")
+                                        .Analyzer("stop")
+                                    )
+                                )
+                            )
+
+                            .Date(dd => dd
+                                .Name(n => n.CommitTimeStamp)
+                            )
+
+                            .Object<NuGetSearchMainDependencyGroup>(o => o
+                                .Name(n => n.DependencyGroups)
+                                .Properties(pp => pp
+                                    .Text(tt => tt
+                                        .Name(nnn => nnn.TargetFramework)
+                                        .Fields(ff => ff
+                                            .Keyword(kk => kk
+                                                .Name("keyword")
+                                                .IgnoreAbove(256)
+                                            )
+                                        )
+                                    )
+                                    .Object<NuGetSearchMainDependency>(o2 => o2
+                                        .Name(nnnn => nnnn.Dependencies)
+                                        .Properties(pppp => pppp
+                                            .Text(tttt => tttt
+                                                .Name(nnnnn => nnnnn.Name)
+                                                .Fields(fffff => fffff
+                                                    .Keyword(kkkkk => kkkkk
+                                                        .Name("keyword")
+                                                        .IgnoreAbove(256)
+                                                    )
+                                                )
+                                            )
+                                            .Text(tttt => tttt
+                                                .Name(nnnnn => nnnnn.VersionRange)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
                     )
                 );
-
             return d;
         }
+
+        //public static CreateIndexDescriptor CreateIndex(string indexName)
+        //{
+        //    CreateIndexDescriptor d = new CreateIndexDescriptor(indexName);
+
+        //    d.Settings(
+        //            y => y.NumberOfShards(3)
+        //        )
+        //        .Mappings(ms =>
+        //            ms.Map<NuGetSearchMain>(m =>
+        //                m.AutoMap()
+        //            )
+        //        );
+
+        //    return d;
+        //}
 
     }
 }
